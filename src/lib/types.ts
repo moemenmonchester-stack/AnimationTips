@@ -7,6 +7,7 @@ export interface File {
 export interface Lesson {
   title: string;
   youtubeId?: string;
+  videoUrl?: string;
   files?: File[];
 }
 

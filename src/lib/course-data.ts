@@ -8,6 +8,7 @@ export const courseData: CourseData = {
       title: 'الفصل الأول: الأساسيات',
       introduction: {
         title: 'المقدمة',
+        videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
         youtubeId: 'c0Zqb5Oo7rY',
         files: [
           {

@@ -37,7 +37,18 @@ export default function VideoModal({ open, onOpenChange }: VideoModalProps) {
               </DialogTitle>
             </DialogHeader>
             <div className="bg-black rounded-lg overflow-hidden">
-              {activeVideo.youtubeId ? (
+              {activeVideo.videoUrl ? (
+                <div className="aspect-video">
+                  <video
+                    className="w-full h-full"
+                    controls
+                    autoPlay
+                    src={activeVideo.videoUrl}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              ) : activeVideo.youtubeId ? (
                 <div className="aspect-video">
                   <iframe
                     className="w-full h-full"
