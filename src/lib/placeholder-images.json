@@ -1,3 +1,10 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "logo",
+      "description": "The animated logo for the Animator Pro course.",
+      "imageUrl": "https://ik.imagekit.io/14j0kadmb/MZ%20Logo/logo-icon-transparent.png?updatedAt=1760869910529",
+      "imageHint": "animated logo"
+    }
+  ]
 }
