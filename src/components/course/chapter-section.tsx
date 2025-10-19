@@ -4,9 +4,8 @@ import type { Chapter } from '@/lib/types';
 import { useAppContext } from '@/hooks/use-app-context';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Lock, PlayCircle, Sparkles } from 'lucide-react';
+import { Lock, PlayCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { AITools } from '../ai/ai-tools';
 
 interface ChapterSectionProps {
   chapter: Chapter;
@@ -94,9 +93,7 @@ export default function ChapterSection({ chapter }: ChapterSectionProps) {
         ))}
       </div>
 
-      {isChapterUnlocked ? (
-        <AITools chapter={chapter} />
-      ) : (
+      {!isChapterUnlocked && (
         <div className="mt-8 pt-6 border-t border-gray-700 text-center">
           <Button
             onClick={handleUnlock}

@@ -10,7 +10,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { useAppContext } from '@/hooks/use-app-context';
 import { Icons } from '../icons';
-import { answerChapterQuestions } from '@/ai/flows/answer-chapter-questions'; // Reusing a similar flow for welcome message
 
 interface WelcomeDialogProps {
   open: boolean;
@@ -24,33 +23,35 @@ const experienceLevels = [
 ];
 
 export default function WelcomeDialog({ open, onOpenChange }: WelcomeDialogProps) {
-  const { currentUser, finishWelcome } = useAppContext();
+  const { currentUser, finishWelcome, setCurrentChapterId } = useAppContext();
   const [step, setStep] = useState<'select' | 'response'>('select');
   const [isLoading, setIsLoading] = useState(false);
   const [aiResponse, setAiResponse] = useState('');
 
-  const handleExperienceSelect = async (level: string, levelInArabic: string) => {
+  const handleExperienceSelect = (level: string, levelInArabic: string) => {
     if (!currentUser) return;
     
     setIsLoading(true);
     setStep('response');
 
-    const prompt = `أنا طالب جديد اسمه "${currentUser.name}" انضم للتو لدورة تحريك الألعاب ثلاثية الأبعاد. مستوى خبرتي هو "${levelInArabic}". 
-    اكتب لي رسالة ترحيب قصيرة ومشجعة باللغة العربية. 
-    ثم، بناءً على مستوى خبرتي، اقترح علي من أي فصل يجب أن أبدأ. 
-    للمبتدئ، اقترح الفصل الأول. لمن لديه خبرة، اقترح مراجعة الفصل الثالث. للمتقدم، اقترح البدء من الفصل الخامس.
-    اجعل الاقتراح في جملة واضحة.`;
+    let response = `أهلاً بك يا ${currentUser.name}! سعيدون بانضمامك. `;
+    let chapterToGo = 'chapter-1';
 
-    try {
-        // Re-purposing this AI flow because its structure is suitable for a directed prompt/response.
-      const result = await answerChapterQuestions({ chapterTitle: "رسالة ترحيب", question: prompt, lessonTitles: "onboarding" });
-      setAiResponse(result.answer);
-    } catch (error) {
-      console.error(error);
-      setAiResponse(`أهلاً بك ${currentUser.name}! نوصيك بالبدء من الفصل الأول لاستيعاب الأساسيات جيداً.`);
-    } finally {
-      setIsLoading(false);
+    if (level === 'intermediate') {
+        response += "بما أن لديك خبرة، نقترح عليك مراجعة الفصل الثالث للانطلاق بقوة.";
+        chapterToGo = 'chapter-3';
+    } else if (level === 'advanced') {
+        response += "بخبرتك المتقدمة، يمكنك البدء مباشرة من الفصل الخامس لتحدي حقيقي.";
+        chapterToGo = 'chapter-5';
+    } else {
+        response += "كنقطة بداية، نوصيك بالبدء من الفصل الأول لتغطية كل الأساسيات.";
     }
+
+    setTimeout(() => {
+        setAiResponse(response);
+        setCurrentChapterId(chapterToGo);
+        setIsLoading(false);
+    }, 1000);
   };
   
   const handleClose = () => {

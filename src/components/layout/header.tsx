@@ -42,7 +42,7 @@ export function Header() {
                 <Button variant="ghost" className="flex items-center gap-3">
                   <Avatar className="h-9 w-9">
                     <AvatarImage
-                      src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${currentUser.email}`}
+                      src={currentUser.avatar}
                       alt={currentUser.name}
                     />
                     <AvatarFallback>

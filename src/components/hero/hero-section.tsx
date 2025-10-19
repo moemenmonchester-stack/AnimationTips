@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import ThreeScene from './three-scene';
-import { generateCourseOverview } from '@/ai/flows/generate-course-overview';
 import { Icons } from '../icons';
 import { Sparkles } from 'lucide-react';
 
@@ -11,7 +10,7 @@ export function HeroSection() {
   const [isLoading, setIsLoading] = useState(false);
   const [showOverview, setShowOverview] = useState(false);
 
-  const handleLearnMore = async () => {
+  const handleLearnMore = () => {
     if (showOverview) {
       setShowOverview(false);
       return;
@@ -21,15 +20,11 @@ export function HeroSection() {
     if (overview) return;
 
     setIsLoading(true);
-    try {
-      const result = await generateCourseOverview();
-      setOverview(result);
-    } catch (error) {
-      console.error('Error generating course overview:', error);
-      setOverview('حدث خطأ أثناء تحميل النبذة. يرجى المحاولة مرة أخرى.');
-    } finally {
-      setIsLoading(false);
-    }
+    // Simulate fetching overview
+    setTimeout(() => {
+        setOverview(`انضم إلى دورتنا 'دورة تحريك الألعاب ثلاثية الأبعاد' وارتق بمهاراتك من الصفر إلى الاحتراف. تعلم أساسيات التحريك، تصميم الشخصيات، والتكامل مع محركات الألعاب مثل Unity وUnreal. ستبني مشروعًا قويًا لعرض أعمالك وتكون جاهزًا لدخول سوق العمل بقوة. سجل الآن وابدأ رحلتك في عالم تصميم الألعاب!`);
+        setIsLoading(false);
+    }, 1000);
   };
 
   return (

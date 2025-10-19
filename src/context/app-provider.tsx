@@ -85,6 +85,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       email,
       password, // In a real app, hash this!
       unlockedChapters: ['chapter-1'],
+      avatar: `https://i.pravatar.cc/150?u=${email}`
     };
     setUsers(prev => ({ ...prev, [email]: newUser }));
     setIsLoggedIn(true);
@@ -170,7 +171,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     activeVideo,
     openVideoModal,
     clearActiveVideo,
-    isWelcomeDialogOpen,
+isWelcomeDialogOpen,
     setWelcomeDialogOpen
   };
 
