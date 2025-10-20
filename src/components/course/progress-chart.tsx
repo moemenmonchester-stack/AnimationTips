@@ -1,62 +1,74 @@
 'use client';
+import { useEffect, useRef } from 'react';
 import { useAppContext } from '@/hooks/use-app-context';
-import {
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-} from 'recharts';
+import Chart from 'chart.js/auto';
 
 export function ProgressChart() {
   const { courseData, currentChapterId } = useAppContext();
+  const chartRef = useRef<HTMLCanvasElement>(null);
+  const chartInstance = useRef<Chart | null>(null);
+
+  useEffect(() => {
+    if (!chartRef.current || !courseData) return;
+
+    const activeIndex = courseData.chapters.findIndex(c => c.id === currentChapterId);
+    const chapterCount = courseData.chapters.length;
+    const data = {
+        labels: courseData.chapters.map(c => c.title.split(':')[0]),
+        datasets: [{
+            data: Array(chapterCount).fill(1),
+            backgroundColor: Array(chapterCount).fill('#4a5568'), 
+            borderColor: '#0a0a1a', 
+            borderWidth: 4,
+            hoverOffset: 8
+        }]
+    };
+    
+    if (activeIndex !== -1) {
+        data.datasets[0].backgroundColor[activeIndex] = '#4f46e5';
+    }
+
+
+    if (chartInstance.current) {
+        chartInstance.current.data = data;
+        chartInstance.current.update();
+    } else {
+        const ctx = chartRef.current.getContext('2d');
+        if (ctx) {
+            chartInstance.current = new Chart(ctx, {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: { 
+                        legend: { display: false }, 
+                        tooltip: { 
+                            enabled: true, 
+                            mode: 'index',
+                            intersect: false,
+                            rtl: true, 
+                            callbacks: { label: c => c.label || '' } 
+                        } 
+                    }
+                }
+            });
+        }
+    }
+  }, [courseData, currentChapterId]);
 
   if (!courseData) return null;
 
-  const chapterCount = courseData.chapters.length;
-  const data = courseData.chapters.map(c => ({
-    name: c.title.split(':')[0],
-    value: 1,
-    id: c.id,
-  }));
   const activeIndex = courseData.chapters.findIndex(c => c.id === currentChapterId);
+  const chapterCount = courseData.chapters.length;
 
   return (
     <>
-    <ResponsiveContainer width="100%" height="100%">
-      <PieChart>
-        <Pie
-          data={data}
-          cx="50%"
-          cy="50%"
-          innerRadius="70%"
-          outerRadius="100%"
-          fill="#8884d8"
-          paddingAngle={2}
-          dataKey="value"
-        >
-          {data.map((entry, index) => (
-            <Cell
-              key={`cell-${index}`}
-              fill={index === activeIndex ? 'hsl(var(--primary))' : 'hsl(var(--secondary))'}
-              stroke="hsl(var(--background))"
-            />
-          ))}
-        </Pie>
-        <Tooltip
-          contentStyle={{
-            background: 'hsl(var(--card))',
-            borderColor: 'hsl(var(--border))',
-            borderRadius: 'var(--radius)',
-            direction: 'rtl',
-          }}
-          cursor={{ fill: 'hsla(var(--primary), 0.1)' }}
-        />
-      </PieChart>
-    </ResponsiveContainer>
-    <div className="absolute inset-0 flex items-center justify-center text-xl font-bold text-gray-200 pointer-events-none">
-        الفصل {activeIndex + 1} / {chapterCount}
-    </div>
+      <canvas ref={chartRef}></canvas>
+      <div className="absolute inset-0 flex items-center justify-center text-xl font-bold text-gray-200 pointer-events-none">
+          الفصل {activeIndex + 1} / {chapterCount}
+      </div>
     </>
   );
 }

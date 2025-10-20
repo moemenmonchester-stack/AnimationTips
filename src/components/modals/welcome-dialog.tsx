@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useAppContext } from '@/hooks/use-app-context';
 import { Icons } from '../icons';
+import { callGenAI } from '@/lib/gen-ai';
 
 interface WelcomeDialogProps {
   open: boolean;
@@ -28,30 +29,32 @@ export default function WelcomeDialog({ open, onOpenChange }: WelcomeDialogProps
   const [isLoading, setIsLoading] = useState(false);
   const [aiResponse, setAiResponse] = useState('');
 
-  const handleExperienceSelect = (level: string, levelInArabic: string) => {
+  const handleExperienceSelect = async (level: string, levelInArabic: string) => {
     if (!currentUser) return;
     
     setIsLoading(true);
     setStep('response');
 
-    let response = `أهلاً بك يا ${currentUser.name}! سعيدون بانضمامك. `;
-    let chapterToGo = 'chapter-1';
+    const prompt = `أنا طالب جديد اسمه "${currentUser.name}" انضم للتو لدورة تحريك الألعاب ثلاثية الأبعاد. مستوى خبرتي هو "${levelInArabic}". 
+    اكتب لي رسالة ترحيب قصيرة ومشجعة باللغة العربية. 
+    ثم، بناءً على مستوى خبرتي، اقترح علي من أي فصل يجب أن أبدأ. 
+    للمبتدئ، اقترح الفصل الأول. لمن لديه خبرة، اقترح مراجعة الفصل الثالث. للمتقدم، اقترح البدء من الفصل الخامس.
+    اجعل الاقتراح في جملة واضحة.`;
 
-    if (level === 'intermediate') {
-        response += "بما أن لديك خبرة، نقترح عليك مراجعة الفصل الثالث للانطلاق بقوة.";
-        chapterToGo = 'chapter-3';
-    } else if (level === 'advanced') {
-        response += "بخبرتك المتقدمة، يمكنك البدء مباشرة من الفصل الخامس لتحدي حقيقي.";
-        chapterToGo = 'chapter-5';
-    } else {
-        response += "كنقطة بداية، نوصيك بالبدء من الفصل الأول لتغطية كل الأساسيات.";
-    }
-
-    setTimeout(() => {
-        setAiResponse(response);
+    try {
+        const responseText = await callGenAI(prompt);
+        setAiResponse(responseText);
+        
+        let chapterToGo = 'chapter-1';
+        if (level === 'intermediate') chapterToGo = 'chapter-3';
+        if (level === 'advanced') chapterToGo = 'chapter-5';
         setCurrentChapterId(chapterToGo);
+
+    } catch (error) {
+        setAiResponse('حدث خطأ. ولكن لا تقلق، يمكنك البدء من الفصل الأول واستكشاف باقي الفصول.');
+    } finally {
         setIsLoading(false);
-    }, 1000);
+    }
   };
   
   const handleClose = () => {
@@ -65,7 +68,7 @@ export default function WelcomeDialog({ open, onOpenChange }: WelcomeDialogProps
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleClose} >
       <DialogContent className="glass-card max-w-lg p-8 text-center" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="text-3xl font-bold gradient-text mb-4">

@@ -7,6 +7,7 @@ import { CourseLayout } from '@/components/course/course-layout';
 import AuthDialog from '@/components/modals/auth-dialog';
 import VideoModal from '@/components/modals/video-modal';
 import WelcomeDialog from '@/components/modals/welcome-dialog';
+import PaymentModal from '@/components/modals/payment-modal';
 import { ContactPopover } from '@/components/layout/contact-popover';
 
 export default function HomePage() {
@@ -18,6 +19,8 @@ export default function HomePage() {
     setVideoModalOpen,
     isWelcomeDialogOpen,
     setWelcomeDialogOpen,
+    isPaymentModalOpen,
+    setPaymentModalOpen
   } = useAppContext();
 
   return (
@@ -41,6 +44,7 @@ export default function HomePage() {
         open={isWelcomeDialogOpen}
         onOpenChange={setWelcomeDialogOpen}
       />
+      <PaymentModal open={isPaymentModalOpen} onOpenChange={setPaymentModalOpen} />
     </>
   );
 }

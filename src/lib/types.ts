@@ -27,5 +27,6 @@ export interface User {
   email: string;
   password?: string; // Should not be stored long-term in a real app
   unlockedChapters: string[];
-  avatar: string;
+  hasActivated: boolean;
+  avatar?: string;
 }

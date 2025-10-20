@@ -6,24 +6,21 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useAppContext } from '@/hooks/use-app-context';
 
 interface AuthDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  initialTab?: 'signin' | 'signup';
+  initialTab?: 'signin' | 'signup'; // this prop is not used in the new design, but kept for compatibility
 }
 
 export default function AuthDialog({
   open,
   onOpenChange,
-  initialTab = 'signin',
 }: AuthDialogProps) {
   const { login, signup } = useAppContext();
   const { toast } = useToast();
@@ -31,15 +28,18 @@ export default function AuthDialog({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const { authDialogTab } = useAppContext();
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     const success = signup(name, email, password);
     if (success) {
       onOpenChange(false);
+      // Welcome modal is triggered from context
     } else {
       toast({
         title: 'خطأ',
-        description: 'هذا الحساب مسجل بالفعل.',
+        description: 'هذا البريد الإلكتروني مسجل بالفعل.',
         variant: 'destructive',
       });
     }
@@ -63,45 +63,10 @@ export default function AuthDialog({
     }
   };
 
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="glass-card max-w-md p-8 text-center">
-        <Tabs defaultValue={initialTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="signin">تسجيل الدخول</TabsTrigger>
-            <TabsTrigger value="signup">إنشاء حساب</TabsTrigger>
-          </TabsList>
-          <TabsContent value="signin">
-            <DialogHeader className="mb-8">
-              <DialogTitle className="text-2xl font-bold text-indigo-400">
-                تسجيل الدخول
-              </DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSignIn}>
-              <div className="space-y-4 text-right">
-                <Input
-                  type="email"
-                  placeholder="البريد الإلكتروني"
-                  className="bg-background/50"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  required
-                />
-                <Input
-                  type="password"
-                  placeholder="كلمة المرور"
-                  className="bg-background/50"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-              <Button type="submit" className="w-full mt-6" size="lg">
-                دخول
-              </Button>
-            </form>
-          </TabsContent>
-          <TabsContent value="signup">
+  if (authDialogTab === 'signup') {
+    return (
+        <Dialog open={open} onOpenChange={onOpenChange}>
+          <DialogContent className="glass-card max-w-md p-8 text-center">
             <DialogHeader className="mb-8">
               <DialogTitle className="text-2xl font-bold text-indigo-400">
                 إنشاء حساب جديد
@@ -134,13 +99,47 @@ export default function AuthDialog({
                   required
                 />
               </div>
-              <Button type="submit" className="w-full mt-6" size="lg">
+              <Button type="submit" className="w-full mt-6 bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-indigo-500 transition-all duration-300 text-lg">
                 إنشاء حساب
               </Button>
             </form>
-          </TabsContent>
-        </Tabs>
-      </DialogContent>
+          </DialogContent>
+        </Dialog>
+    )
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="glass-card max-w-md p-8 text-center">
+            <DialogHeader className="mb-8">
+                <DialogTitle className="text-2xl font-bold text-indigo-400">
+                    تسجيل الدخول
+                </DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleSignIn}>
+                <div className="space-y-4 text-right">
+                <Input
+                    type="email"
+                    placeholder="البريد الإلكتروني"
+                    className="bg-background/50"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    required
+                />
+                <Input
+                    type="password"
+                    placeholder="كلمة المرور"
+                    className="bg-background/50"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    required
+                />
+                </div>
+                <Button type="submit" className="w-full mt-6 bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-indigo-500 transition-all duration-300 text-lg">
+                    دخول
+                </Button>
+            </form>
+        </DialogContent>
     </Dialog>
   );
 }

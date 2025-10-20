@@ -2,7 +2,7 @@
 
 import { useAppContext } from '@/hooks/use-app-context';
 import { ProgressChart } from './progress-chart';
-import { Lock, Unlock } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -19,19 +19,7 @@ export default function Sidebar() {
   if (!courseData) return null;
 
   const handleNavClick = (chapterId: string) => {
-    const isUnlocked =
-      chapterId === 'chapter-1' ||
-      (isLoggedIn && currentUser?.unlockedChapters?.includes(chapterId));
-
-    if (isUnlocked) {
-      setCurrentChapterId(chapterId);
-    } else {
-      toast({
-        title: 'الفصل مقفل',
-        description: 'يرجى الاشتراك في الفصل أولاً لفتح هذا المحتوى.',
-        variant: 'destructive',
-      });
-    }
+    setCurrentChapterId(chapterId);
   };
 
   return (
@@ -60,12 +48,9 @@ export default function Sidebar() {
                   : 'bg-secondary hover:bg-primary/80',
                 !isUnlocked && 'opacity-70'
               )}
+              title={!isUnlocked ? 'اشترك في الفصل لفتح هذا المحتوى' : ''}
             >
-              {isUnlocked ? (
-                <Unlock className="w-4 h-4 opacity-70" />
-              ) : (
-                <Lock className="w-4 h-4" />
-              )}
+              {!isUnlocked && <Lock className="w-4 h-4" />}
               <span>{chapter.title.split(':')[0]}</span>
             </button>
           );

@@ -5,7 +5,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Mail, Phone } from 'lucide-react';
 import { Icons } from '../icons';
 
 export function ContactPopover() {
@@ -14,10 +13,10 @@ export function ContactPopover() {
       <PopoverTrigger asChild>
         <Button
           size="icon"
-          className="fixed bottom-8 left-8 w-14 h-14 rounded-full shadow-lg shadow-primary/30 z-50 transform hover:scale-110 transition-transform"
+          className="fixed bottom-8 left-8 w-14 h-14 rounded-full shadow-lg bg-primary text-primary-foreground shadow-primary/30 z-50 transform hover:scale-110 transition-transform"
           aria-label="Contact me"
         >
-          <Mail className="w-7 h-7" />
+          <Icons.mail />
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -38,11 +37,11 @@ export function ContactPopover() {
           </div>
           <p className="text-sm text-muted-foreground text-center mt-4">أو تابعني على:</p>
           <div className="flex justify-center space-x-4 text-muted-foreground">
-            <a href="#" className="hover:text-accent transition-colors" aria-label="Facebook">
-                <Icons.facebook className="w-7 h-7" />
+            <a href="#" className="hover:text-pink-400 transition-colors" aria-label="Facebook">
+                <Icons.facebook />
             </a>
-            <a href="#" className="hover:text-accent transition-colors" aria-label="Twitter">
-                <Icons.twitter className="w-7 h-7" />
+            <a href="#" className="hover:text-pink-400 transition-colors" aria-label="Twitter">
+                <Icons.twitter />
             </a>
           </div>
         </div>
