@@ -33,7 +33,6 @@ export default function Sidebar() {
       <nav className="space-y-3">
         {courseData.chapters.map(chapter => {
           const isUnlocked =
-            chapter.id === 'chapter-1' ||
             (isLoggedIn && currentUser?.unlockedChapters?.includes(chapter.id));
           const isActive = chapter.id === currentChapterId;
 

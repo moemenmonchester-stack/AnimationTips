@@ -41,7 +41,7 @@ export default function ChapterSection({ chapter }: ChapterSectionProps) {
   const handleContentClick = (
     item: Chapter['introduction'] | Chapter['content'][0]
   ) => {
-    if (chapter.id !== 'chapter-1' && !isChapterUnlocked) {
+    if (!isChapterUnlocked) {
       toast({
         title: 'المحتوى مقفل',
         description: 'يرجى الاشتراك في الفصل أولاً لعرض هذا الدرس.',
@@ -127,9 +127,9 @@ export default function ChapterSection({ chapter }: ChapterSectionProps) {
           onClick={() => handleContentClick(chapter.introduction)}
           variant={'secondary'}
           className="w-full h-auto py-3 px-5 rounded-lg transition-colors flex items-center justify-center gap-3 bg-pink-600 hover:bg-pink-500 text-white disabled:opacity-60 disabled:cursor-not-allowed"
-          disabled={chapter.id !== 'chapter-1' && !isChapterUnlocked}
+          disabled={!isChapterUnlocked}
         >
-          {(chapter.id !== 'chapter-1' && !isChapterUnlocked) ? <Lock /> : <PlayCircle />}
+          {!isChapterUnlocked ? <Lock /> : <PlayCircle />}
           <span>{chapter.introduction.title}</span>
         </Button>
       )}
@@ -143,7 +143,7 @@ export default function ChapterSection({ chapter }: ChapterSectionProps) {
               <button
                 onClick={() => handleContentClick(item)}
                 className="flex-grow text-right disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={!isChapterUnlocked && chapter.id !== 'chapter-1'}
+                disabled={!isChapterUnlocked}
               >
                 <p className="text-gray-200 font-bold text-indigo-400">{item.title}</p>
               </button>
@@ -151,7 +151,7 @@ export default function ChapterSection({ chapter }: ChapterSectionProps) {
                  <Button variant="ghost" size="icon" onClick={() => handleAiInteraction('summary', index)} className="text-2xl hover:opacity-75 transition-opacity p-2 -mr-2">
                     <Sparkles className='h-5 w-5' />
                  </Button>
-              ) : ( chapter.id !== 'chapter-1' &&
+              ) : (
                   <Lock className="w-5 h-5 text-muted-foreground mr-4" />
               )}
             </CardContent>

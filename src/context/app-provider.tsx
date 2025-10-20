@@ -5,11 +5,12 @@ import { useToast } from '@/hooks/use-toast';
 import { courseData as staticCourseData } from '@/lib/course-data';
 import type { User, CourseData, Lesson } from '@/lib/types';
 
+//Auth Code
 const DEFAULT_ACTIVATION_CODES = {
   "566": { used: false },
-  "678": { used: false },
-  "399": { used: false },
-  "254": { used: false }
+  "": { used: false },
+  "": { used: false },
+  "": { used: false }
 };
 
 interface AppContextType {
