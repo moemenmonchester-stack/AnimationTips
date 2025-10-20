@@ -34,14 +34,19 @@ export default function ChapterSection({ chapter }: ChapterSectionProps) {
 
   const [summaryState, setSummaryState] = useState<Record<number, {loading: boolean; text: string}>>({});
 
-
   const isChapterUnlocked =
     (isLoggedIn && currentUser?.unlockedChapters.includes(chapter.id));
 
+  // The introduction to chapter-1 is always unlocked.
+  const isIntroUnlocked = chapter.id === 'chapter-1' || isChapterUnlocked;
+
   const handleContentClick = (
-    item: Chapter['introduction'] | Chapter['content'][0]
+    item: Chapter['introduction'] | Chapter['content'][0],
+    isIntro: boolean = false
   ) => {
-    if (!isChapterUnlocked) {
+    const isItemUnlocked = isIntro ? isIntroUnlocked : isChapterUnlocked;
+
+    if (!isItemUnlocked) {
       toast({
         title: 'المحتوى مقفل',
         description: 'يرجى الاشتراك في الفصل أولاً لعرض هذا الدرس.',
@@ -124,12 +129,12 @@ export default function ChapterSection({ chapter }: ChapterSectionProps) {
 
       {chapter.introduction && (
         <Button
-          onClick={() => handleContentClick(chapter.introduction)}
+          onClick={() => handleContentClick(chapter.introduction, true)}
           variant={'secondary'}
           className="w-full h-auto py-3 px-5 rounded-lg transition-colors flex items-center justify-center gap-3 bg-pink-600 hover:bg-pink-500 text-white disabled:opacity-60 disabled:cursor-not-allowed"
-          disabled={!isChapterUnlocked}
+          disabled={!isIntroUnlocked}
         >
-          {!isChapterUnlocked ? <Lock /> : <PlayCircle />}
+          {!isIntroUnlocked ? <Lock /> : <PlayCircle />}
           <span>{chapter.introduction.title}</span>
         </Button>
       )}
