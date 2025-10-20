@@ -13,7 +13,7 @@ export function ContactPopover() {
       <PopoverTrigger asChild>
         <Button
           size="icon"
-          className="fixed bottom-8 left-8 w-14 h-14 rounded-full shadow-lg bg-primary text-primary-foreground shadow-primary/30 z-50 transform hover:scale-110 transition-transform"
+          className="fixed bottom-8 left-8 w-20 h-20 rounded-full shadow-lg bg-primary text-primary-foreground shadow-primary/30 z-50 transform hover:scale-110 transition-transform"
           aria-label="Contact me"
         >
           <Icons.mail />

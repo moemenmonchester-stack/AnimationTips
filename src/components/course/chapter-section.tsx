@@ -34,19 +34,15 @@ export default function ChapterSection({ chapter }: ChapterSectionProps) {
 
   const [summaryState, setSummaryState] = useState<Record<number, {loading: boolean; text: string}>>({});
 
-  const isChapterUnlocked =
-    (isLoggedIn && currentUser?.unlockedChapters.includes(chapter.id));
-
-  // The introduction to chapter-1 is always unlocked.
-  const isIntroUnlocked = chapter.id === 'chapter-1' || isChapterUnlocked;
+  const isSubscribed = isLoggedIn && currentUser?.unlockedChapters.includes(chapter.id);
 
   const handleContentClick = (
     item: Chapter['introduction'] | Chapter['content'][0],
     isIntro: boolean = false
   ) => {
-    const isItemUnlocked = isIntro ? isIntroUnlocked : isChapterUnlocked;
+    const canView = isSubscribed || (isIntro && chapter.id === 'chapter-1');
 
-    if (!isItemUnlocked) {
+    if (!canView) {
       toast({
         title: 'المحتوى مقفل',
         description: 'يرجى الاشتراك في الفصل أولاً لعرض هذا الدرس.',
@@ -123,6 +119,8 @@ export default function ChapterSection({ chapter }: ChapterSectionProps) {
   }
 
 
+  const introCanView = isSubscribed || chapter.id === 'chapter-1';
+
   return (
     <div className="glass-card p-6 md:p-8 rounded-2xl shadow-xl">
       <h2 className="text-3xl font-bold mb-6 text-indigo-400">{chapter.title}</h2>
@@ -132,9 +130,9 @@ export default function ChapterSection({ chapter }: ChapterSectionProps) {
           onClick={() => handleContentClick(chapter.introduction, true)}
           variant={'secondary'}
           className="w-full h-auto py-3 px-5 rounded-lg transition-colors flex items-center justify-center gap-3 bg-pink-600 hover:bg-pink-500 text-white disabled:opacity-60 disabled:cursor-not-allowed"
-          disabled={!isIntroUnlocked}
+          disabled={!introCanView}
         >
-          {!isIntroUnlocked ? <Lock /> : <PlayCircle />}
+          {!introCanView ? <Lock /> : <PlayCircle />}
           <span>{chapter.introduction.title}</span>
         </Button>
       )}
@@ -148,11 +146,11 @@ export default function ChapterSection({ chapter }: ChapterSectionProps) {
               <button
                 onClick={() => handleContentClick(item)}
                 className="flex-grow text-right disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={!isChapterUnlocked}
+                disabled={!isSubscribed}
               >
                 <p className="text-gray-200 font-bold text-indigo-400">{item.title}</p>
               </button>
-              {isChapterUnlocked ? (
+              {isSubscribed ? (
                  <Button variant="ghost" size="icon" onClick={() => handleAiInteraction('summary', index)} className="text-2xl hover:opacity-75 transition-opacity p-2 -mr-2">
                     <Sparkles className='h-5 w-5' />
                  </Button>
@@ -170,7 +168,7 @@ export default function ChapterSection({ chapter }: ChapterSectionProps) {
         ))}
       </div>
 
-      {!isChapterUnlocked && (
+      {!isSubscribed && (
         <div className="mt-8 pt-6 border-t border-gray-700 text-center">
           <Button
             onClick={handleUnlock}
@@ -183,7 +181,7 @@ export default function ChapterSection({ chapter }: ChapterSectionProps) {
         </div>
       )}
 
-      {isChapterUnlocked && (
+      {isSubscribed && (
           <div className="mt-8 pt-6 border-t border-gray-700">
               <h3 className="text-2xl font-bold text-center mb-4 gradient-text">أدوات الذكاء الاصطناعي ✨</h3>
               <div className="glass-card p-6 rounded-lg space-y-8">
